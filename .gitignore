@@ -34,8 +34,8 @@ proguard/
 captures/
 
 # Keystore (bỏ comment nếu không muốn lộ)
-*.jks
-*.keystore
+#*.jks
+#*.keystore
 
 # Google Services (Firebase config)
 google-services.json
