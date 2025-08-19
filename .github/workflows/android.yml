@@ -18,7 +18,7 @@ on:
 
 jobs:
   build:
-    name: Build APK
+    name: Build Release APK
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -29,15 +29,24 @@ jobs:
         with:
           java-version: 17
           distribution: temurin
+          cache: gradle   # ✅ Tự động cache Gradle
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
       - name: Build Release APK
-        run: bash ./gradlew assembleRelease
+        run: bash ./gradlew assembleRelease --no-daemon --stacktrace
 
-      - name: Upload APKs
+      - name: Rename APK with commit hash
+        run: |
+          COMMIT_HASH=${GITHUB_SHA::7}
+          RELEASE_DIR=app/build/outputs/apk/release
+          if [ -f "$RELEASE_DIR/app-release.apk" ]; then
+            mv $RELEASE_DIR/app-release.apk $RELEASE_DIR/app-release-${COMMIT_HASH}.apk
+          fi
+
+      - name: Upload Release APK
         uses: actions/upload-artifact@v4
         with:
-          name: apks
-          path: app/build/outputs/apk/**/*.apk
+          name: app-release
+          path: app/build/outputs/apk/release/app-release-*.apk
