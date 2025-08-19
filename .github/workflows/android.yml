@@ -27,16 +27,13 @@ jobs:
           distribution: temurin
       - uses: actions/cache@v4
         with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
+          path: ~/.gradle
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
       - run: chmod +x ./gradlew
       - run: ./gradlew assembleRelease
-      - run: |
-          mv app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/app-release-${GITHUB_SHA::7}.apk || { echo "APK not found"; exit 1; }
+      - run: mv app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/app-release-${GITHUB_SHA::7}.apk || exit 1
       - uses: actions/upload-artifact@v4
         with:
-          name: app-release-${{ github.sha }}
+          name: app-release-${GITHUB_SHA::7}
           path: app/build/outputs/apk/release/app-release-*.apk
           if-no-files-found: error
