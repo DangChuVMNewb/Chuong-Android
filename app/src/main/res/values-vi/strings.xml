@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Chuong</string>
+    <string name="clickme">Bấm vào tôi </string>
+    <string name="hello">Xin chào thế giới!</string>
+</resources>
