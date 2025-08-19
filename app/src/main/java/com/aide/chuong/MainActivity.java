@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         if (pressedTime + 2000 > System.currentTimeMillis()) {
             finishAffinity();
         } else {
-            Toast.makeText(getBaseContext(), "Nhấn lại lần nữa để thoát", Toast.LENGTH_SHORT)
+            Toast.makeText(getBaseContext(), "Nhấn lại lần nữa để thoát!", Toast.LENGTH_SHORT)
                     .show();
         }
         pressedTime = System.currentTimeMillis();
