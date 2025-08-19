@@ -1,28 +1,37 @@
-
 plugins {
     id 'com.android.application'
-    
 }
 
 android {
     namespace 'com.aide.chuong'
     compileSdk 33
-    
+
     defaultConfig {
         applicationId "com.aide.chuong"
         minSdk 23
         targetSdk 33
         versionCode 1
         versionName "1.0"
-        
-        vectorDrawables { 
+
+        vectorDrawables {
             useSupportLibrary true
+        }
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("../chuong.keystore")
+            storePassword "chuong"
+            keyAlias "chuong"
+            keyPassword "chuong"
         }
     }
 
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -34,15 +43,11 @@ android {
 
     buildFeatures {
         viewBinding true
-        
     }
-    
 }
 
 dependencies {
-
-
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("com.google.android.material:material:1.9.0")
+    implementation "androidx.appcompat:appcompat:1.6.1"
+    implementation "androidx.constraintlayout:constraintlayout:2.1.4"
+    implementation "com.google.android.material:material:1.9.0"
 }
