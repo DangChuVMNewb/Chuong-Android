@@ -2,12 +2,14 @@ package com.chuong.mc;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.util.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import fi.iki.elonen.NanoHTTPD;
 
 public class Server extends NanoHTTPD {
 
+    private static final String TAG = "Server";
     private final Context context;
 
     public Server(Context context) {
@@ -24,9 +26,7 @@ public class Server extends NanoHTTPD {
             uri = "/index.html";
         }
 
-        try {
-            AssetManager am = context.getAssets();
-            InputStream is = am.open(uri.substring(1)); // bỏ dấu "/"
+        try (InputStream is = am.open(uri.substring(1))) { // bỏ dấu "/"
             String mime = getMimeTypeForFile(uri);
             return newChunkedResponse(Response.Status.OK, mime, is);
         } catch (IOException e) {
@@ -39,6 +39,8 @@ public class Server extends NanoHTTPD {
     public void startServer() {
         try {
             start(SOCKET_READ_TIMEOUT, false);
-        } catch (IOException ignored) {}
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to start server", e);
+        }
     }
 }

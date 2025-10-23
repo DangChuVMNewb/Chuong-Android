@@ -29,6 +29,7 @@ import com.chuong.mc.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String INITIAL_URL = "https://google.com";
     private ActivityMainBinding binding;
     private long exit;
     private ProgressBar progressBar;
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         // CẤU HÌNH WEBVIEW
         // -----------------------------
         WebView webView = binding.webview;
-        webView.loadUrl("https://google.com");
+        webView.loadUrl(INITIAL_URL);
 
         @SuppressLint("SetJavaScriptEnabled")
         WebSettings ws = webView.getSettings();
@@ -86,6 +87,19 @@ public class MainActivity extends AppCompatActivity {
                     public boolean shouldOverrideUrlLoading(WebView view, String url) {
                         view.loadUrl(url);
                         return false;
+                    }
+
+                    @Override
+                    public void onReceivedError(
+                            WebView view,
+                            android.webkit.WebResourceRequest request,
+                            android.webkit.WebResourceError error) {
+                        super.onReceivedError(view, request, error);
+                        Toast.makeText(
+                                        MainActivity.this,
+                                        "Error: " + error.getDescription(),
+                                        Toast.LENGTH_SHORT)
+                                .show();
                     }
                 });
         // -----------------------------
@@ -158,14 +172,15 @@ public class MainActivity extends AppCompatActivity {
                                                 .BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
                             }
                         } else {
+                            // For older Android versions
                             View decorView = window.getDecorView();
-                            decorView.setSystemUiVisibility(
-                                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                                            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                                            | View.SYSTEM_UI_FLAG_FULLSCREEN);
+                            int uiOptions = View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                                    | View.SYSTEM_UI_FLAG_FULLSCREEN;
+                            decorView.setSystemUiVisibility(uiOptions);
                         }
                     }
 
@@ -181,7 +196,10 @@ public class MainActivity extends AppCompatActivity {
                             }
                         } else {
                             View decorView = window.getDecorView();
-                            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+                            int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+                            decorView.setSystemUiVisibility(uiOptions);
                         }
                     }
 
@@ -200,15 +218,24 @@ public class MainActivity extends AppCompatActivity {
         // checkPermissions();
         server = new Server(this);
         server.startServer();
+
+        getOnBackPressedDispatcher()
+                .addCallback(
+                        this,
+                        new androidx.activity.OnBackPressedCallback(true) {
+                            @Override
+                            public void handleOnBackPressed() {
+                                MainActivity.this.handleOnBackPressed();
+                            }
+                        });
     }
 
-    @Override
-    public void onBackPressed() {
+    private void handleOnBackPressed() {
         if (binding.webview.canGoBack()) {
             binding.webview.goBack();
         } else {
             if (exit + 2000 > System.currentTimeMillis()) {
-                super.onBackPressed();
+                finish();
             } else {
                 Toast.makeText(this, getString(R.string.onback), Toast.LENGTH_SHORT).show();
             }
