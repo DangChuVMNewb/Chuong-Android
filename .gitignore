@@ -6,7 +6,7 @@
 *.androidide
 # Files for the ART/Dalvik VM
 *.dex
-
+/device-spec.json
 # Java class files
 *.class
 
