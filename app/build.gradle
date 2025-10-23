@@ -6,12 +6,16 @@ android {
     namespace 'com.chuong.mc'
     compileSdk 34
 
+    def gitCommitHash = "git rev-parse HEAD".execute().text.trim()
+    def shortCommitHash = "git rev-parse --short HEAD".execute().text.trim()
+
+
     defaultConfig {
         applicationId "com.chuong.mc"
         minSdk 23
         targetSdk 33
         versionCode 1
-        versionName "1.0"
+        versionName "chuong-" + shortCommitHash
 
         vectorDrawables {
             useSupportLibrary true
