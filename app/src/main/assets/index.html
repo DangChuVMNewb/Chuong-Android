@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChuongMC</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #000; /* nền đen cho video nổi bật hơn */
+      display: flex;
+      justify-content: center;  /* căn giữa ngang */
+      align-items: center;       /* căn giữa dọc */
+      height: 100vh;             /* full màn hình */
+    }
+    video {
+      width: 90%;                /* chiếm 90% chiều ngang màn hình */
+      max-width: 600px;          /* giới hạn tối đa 600px */
+      border-radius: 12px;       /* bo góc mềm */
+      box-shadow: 0 0 20px rgba(0,0,0,0.5); /* đổ bóng nhẹ */
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+  <video controls autoplay>
+    <source src="/video.mp4" type="video/mp4">
+    Trình duyệt của bạn không hỗ trợ video.
+  </video>
+</body>
+</html>
