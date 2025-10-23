@@ -68,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
         ws.setLoadsImagesAutomatically(true);
         ws.setDefaultTextEncodingName("utf-8");
         binding.webview.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
-        binding.webview.setInitialScale(1);
 
         // Bật User Agent
         ws.setUserAgentString(
@@ -173,12 +172,13 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             // For older Android versions
                             View decorView = window.getDecorView();
-                            int uiOptions = View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                                    | View.SYSTEM_UI_FLAG_FULLSCREEN;
+                            int uiOptions =
+                                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                                            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                                            | View.SYSTEM_UI_FLAG_FULLSCREEN;
                             decorView.setSystemUiVisibility(uiOptions);
                         }
                     }
@@ -195,9 +195,10 @@ public class MainActivity extends AppCompatActivity {
                             }
                         } else {
                             View decorView = window.getDecorView();
-                            int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+                            int uiOptions =
+                                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
                             decorView.setSystemUiVisibility(uiOptions);
                         }
                     }
@@ -214,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
                 });
         binding.fabReload.setOnClickListener(
                 v -> binding.webview.loadUrl(binding.webview.getUrl()));
-        // checkPermissions();
+        checkPermissions();
 
         getOnBackPressedDispatcher()
                 .addCallback(
@@ -240,20 +241,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //    private void checkPermissions() {
-    //      String[] permissions = {
-    //            Manifest.permission.READ_MEDIA_AUDIO,
-    //          Manifest.permission.READ_MEDIA_VIDEO,
-    //          Manifest.permission.READ_MEDIA_IMAGES,
-    //          Manifest.permission.POST_NOTIFICATIONS,
-    //      };
-    //      for (String perm : permissions) {
-    //          if (checkSelfPermission(perm) != PackageManager.PERMISSION_GRANTED) {
-    //              requestPermissions(permissions, 100);
-    //              break;
-    //          }
-    //     }
-    //  }
-
-
+    private void checkPermissions() {
+        String[] permissions = {
+            // Manifest.permission.READ_MEDIA_AUDIO,
+            // Manifest.permission.READ_MEDIA_VIDEO,
+            // Manifest.permission.READ_MEDIA_IMAGES,
+            Manifest.permission.POST_NOTIFICATIONS,
+        };
+        for (String perm : permissions) {
+            if (checkSelfPermission(perm) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(permissions, 100);
+                break;
+            }
+        }
+    }
 }
