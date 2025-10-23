@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private long exit;
     private ProgressBar progressBar;
-    private Server server;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -216,8 +215,6 @@ public class MainActivity extends AppCompatActivity {
         binding.fabReload.setOnClickListener(
                 v -> binding.webview.loadUrl(binding.webview.getUrl()));
         // checkPermissions();
-        server = new Server(this);
-        server.startServer();
 
         getOnBackPressedDispatcher()
                 .addCallback(
@@ -258,11 +255,5 @@ public class MainActivity extends AppCompatActivity {
     //     }
     //  }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (server != null) {
-            server.stop();
-        }
-    }
+
 }
