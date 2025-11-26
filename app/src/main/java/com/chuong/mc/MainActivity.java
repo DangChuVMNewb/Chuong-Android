@@ -1,6 +1,5 @@
 package com.chuong.mc;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.os.Build;
@@ -19,10 +18,6 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import androidx.activity.ComponentActivity;
-import android.content.pm.PackageManager;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.chuong.mc.databinding.ActivityMainBinding;
@@ -70,8 +65,7 @@ public class MainActivity extends AppCompatActivity {
         binding.webview.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
 
         // Bật User Agent
-        ws.setUserAgentString(
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.6998.35/36 Safari/537.36");
+        ws.setUserAgentString("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.6998.35/36 Safari/537.36");
 
         // ✅ Cho phép cookie và cookie bên thứ 3 (rất quan trọng cho Google)
         CookieManager cookieManager = CookieManager.getInstance();
@@ -79,143 +73,142 @@ public class MainActivity extends AppCompatActivity {
         cookieManager.setAcceptThirdPartyCookies(webView, true);
 
         // ✅ Cho phép WebView tự xử lý redirect (OAuth login)
-        webView.setWebViewClient(
-                new WebViewClient() {
-                    @Override
-                    public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                        view.loadUrl(url);
-                        return false;
-                    }
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.loadUrl(url);
+                return false;
+            }
 
-                    @Override
-                    public void onReceivedError(
-                            WebView view,
-                            android.webkit.WebResourceRequest request,
-                            android.webkit.WebResourceError error) {
-                        super.onReceivedError(view, request, error);
-                        Toast.makeText(
-                                        MainActivity.this,
-                                        "Error: " + error.getDescription(),
-                                        Toast.LENGTH_SHORT)
-                                .show();
-                    }
-                });
+            @Override
+            public void onReceivedError(
+                    WebView view,
+                    android.webkit.WebResourceRequest request,
+                    android.webkit.WebResourceError error) {
+                super.onReceivedError(view, request, error);
+                Toast.makeText(
+                                MainActivity.this,
+                                "Error: " + error.getDescription(),
+                                Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
+        
         // -----------------------------
         // XỬ LÝ VIDEO TOÀN MÀN HÌNH
         // -----------------------------
-        webView.setWebChromeClient(
-                new WebChromeClient() {
-                    private View mCustomView;
-                    private CustomViewCallback mCustomViewCallback;
-                    private int mOriginalOrientation;
-                    private int mOriginalSystemUiVisibility;
+        webView.setWebChromeClient(new WebChromeClient() {
+            private View mCustomView;
+            private CustomViewCallback mCustomViewCallback;
+            private int mOriginalOrientation;
+            private int mOriginalSystemUiVisibility;
 
-                    @Override
-                    public Bitmap getDefaultVideoPoster() {
-                        return null;
+            @Override
+            public Bitmap getDefaultVideoPoster() {
+                return null;
+            }
+
+            @Override
+            public void onShowCustomView(View view, CustomViewCallback callback) {
+                if (mCustomView != null) {
+                    onHideCustomView();
+                    return;
+                }
+
+                mCustomView = view;
+                mCustomViewCallback = callback;
+
+                FrameLayout decor = (FrameLayout) getWindow().getDecorView();
+                mOriginalSystemUiVisibility = decor.getSystemUiVisibility();
+                mOriginalOrientation = getRequestedOrientation();
+
+                decor.addView(
+                        mCustomView,
+                        new FrameLayout.LayoutParams(
+                                ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.MATCH_PARENT));
+
+                hideSystemUI();
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+            }
+
+            @Override
+            public void onHideCustomView() {
+                if (mCustomView == null) return;
+
+                FrameLayout decor = (FrameLayout) getWindow().getDecorView();
+                decor.removeView(mCustomView);
+                mCustomView = null;
+
+                showSystemUI();
+                setRequestedOrientation(mOriginalOrientation);
+
+                if (mCustomViewCallback != null) {
+                    mCustomViewCallback.onCustomViewHidden();
+                    mCustomViewCallback = null;
+                }
+            }
+
+            private void hideSystemUI() {
+                Window window = getWindow();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    window.setDecorFitsSystemWindows(false);
+                    WindowInsetsController controller = window.getInsetsController();
+                    if (controller != null) {
+                        controller.hide(
+                                WindowInsets.Type.statusBars()
+                                        | WindowInsets.Type.navigationBars());
+                        controller.setSystemBarsBehavior(
+                                WindowInsetsController
+                                        .BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
                     }
+                } else {
+                    // For older Android versions
+                    View decorView = window.getDecorView();
+                    int uiOptions =
+                            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                                    | View.SYSTEM_UI_FLAG_FULLSCREEN;
+                    decorView.setSystemUiVisibility(uiOptions);
+                }
+            }
 
-                    @Override
-                    public void onShowCustomView(View view, CustomViewCallback callback) {
-                        if (mCustomView != null) {
-                            onHideCustomView();
-                            return;
-                        }
-
-                        mCustomView = view;
-                        mCustomViewCallback = callback;
-
-                        FrameLayout decor = (FrameLayout) getWindow().getDecorView();
-                        mOriginalSystemUiVisibility = decor.getSystemUiVisibility();
-                        mOriginalOrientation = getRequestedOrientation();
-
-                        decor.addView(
-                                mCustomView,
-                                new FrameLayout.LayoutParams(
-                                        ViewGroup.LayoutParams.MATCH_PARENT,
-                                        ViewGroup.LayoutParams.MATCH_PARENT));
-
-                        hideSystemUI();
-                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+            private void showSystemUI() {
+                Window window = getWindow();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    window.setDecorFitsSystemWindows(true);
+                    WindowInsetsController controller = window.getInsetsController();
+                    if (controller != null) {
+                        controller.show(
+                                WindowInsets.Type.statusBars()
+                                        | WindowInsets.Type.navigationBars());
                     }
+                } else {
+                    View decorView = window.getDecorView();
+                    int uiOptions =
+                            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+                    decorView.setSystemUiVisibility(uiOptions);
+                }
+            }
 
-                    @Override
-                    public void onHideCustomView() {
-                        if (mCustomView == null) return;
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                progressBar.setProgress(newProgress);
+                if (newProgress == 100) {
+                    progressBar.setVisibility(View.GONE);
+                } else {
+                    progressBar.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
-                        FrameLayout decor = (FrameLayout) getWindow().getDecorView();
-                        decor.removeView(mCustomView);
-                        mCustomView = null;
-
-                        showSystemUI();
-                        setRequestedOrientation(mOriginalOrientation);
-
-                        if (mCustomViewCallback != null) {
-                            mCustomViewCallback.onCustomViewHidden();
-                            mCustomViewCallback = null;
-                        }
-                    }
-
-                    private void hideSystemUI() {
-                        Window window = getWindow();
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                            window.setDecorFitsSystemWindows(false);
-                            WindowInsetsController controller = window.getInsetsController();
-                            if (controller != null) {
-                                controller.hide(
-                                        WindowInsets.Type.statusBars()
-                                                | WindowInsets.Type.navigationBars());
-                                controller.setSystemBarsBehavior(
-                                        WindowInsetsController
-                                                .BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
-                            }
-                        } else {
-                            // For older Android versions
-                            View decorView = window.getDecorView();
-                            int uiOptions =
-                                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                                            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                                            | View.SYSTEM_UI_FLAG_FULLSCREEN;
-                            decorView.setSystemUiVisibility(uiOptions);
-                        }
-                    }
-
-                    private void showSystemUI() {
-                        Window window = getWindow();
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                            window.setDecorFitsSystemWindows(true);
-                            WindowInsetsController controller = window.getInsetsController();
-                            if (controller != null) {
-                                controller.show(
-                                        WindowInsets.Type.statusBars()
-                                                | WindowInsets.Type.navigationBars());
-                            }
-                        } else {
-                            View decorView = window.getDecorView();
-                            int uiOptions =
-                                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
-                            decorView.setSystemUiVisibility(uiOptions);
-                        }
-                    }
-
-                    @Override
-                    public void onProgressChanged(WebView view, int newProgress) {
-                        progressBar.setProgress(newProgress);
-                        if (newProgress == 100) {
-                            progressBar.setVisibility(View.GONE);
-                        } else {
-                            progressBar.setVisibility(View.VISIBLE);
-                        }
-                    }
-                });
-        binding.fabReload.setOnClickListener(
-                v -> binding.webview.loadUrl(binding.webview.getUrl()));
-        checkPermissions();
+        // Sửa lỗi cú pháp: thiếu () khi gọi reload
+        binding.fabReload.setOnClickListener(v -> binding.webview.reload());
 
         getOnBackPressedDispatcher()
                 .addCallback(
@@ -238,21 +231,6 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, getString(R.string.onback), Toast.LENGTH_SHORT).show();
             }
             exit = System.currentTimeMillis();
-        }
-    }
-
-    private void checkPermissions() {
-        String[] permissions = {
-            // Manifest.permission.READ_MEDIA_AUDIO,
-            // Manifest.permission.READ_MEDIA_VIDEO,
-            // Manifest.permission.READ_MEDIA_IMAGES,
-            Manifest.permission.POST_NOTIFICATIONS,
-        };
-        for (String perm : permissions) {
-            if (checkSelfPermission(perm) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(permissions, 100);
-                break;
-            }
         }
     }
 }
