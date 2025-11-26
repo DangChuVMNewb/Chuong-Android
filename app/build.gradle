@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace 'com.chuong.mc'
-    compileSdk 34
+    compileSdk 36
 
     def gitCommitHash = "git rev-parse HEAD".execute().text.trim()
     def shortCommitHash = "git rev-parse --short HEAD".execute().text.trim()
@@ -12,8 +12,8 @@ android {
 
     defaultConfig {
         applicationId "com.chuong.mc"
-        minSdk 23
-        targetSdk 33
+        minSdk 24
+        targetSdk 36
         versionCode 1
         versionName "chuong-" + shortCommitHash
 
