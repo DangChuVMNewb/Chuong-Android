@@ -1,6 +1,5 @@
 version: 2
 updates:
-  # Kiểm tra dependency Gradle mỗi ngày
   - package-ecosystem: "gradle"
     directory: "/"
     schedule:
@@ -14,7 +13,6 @@ updates:
       prefix: "deps"
     rebase-strategy: "auto"
 
-  # (Tuỳ chọn) Kiểm tra GitHub Actions mỗi ngày luôn
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
