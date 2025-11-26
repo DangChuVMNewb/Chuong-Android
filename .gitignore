@@ -3,6 +3,7 @@
 *.aar
 *.ap_
 *.aab
+*.acside
 *.androidide
 # Files for the ART/Dalvik VM
 *.dex

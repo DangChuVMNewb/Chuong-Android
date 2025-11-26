@@ -2,9 +2,7 @@
 
     <!-- Base application theme -->
     <style name="Base.AppTheme" parent="Theme.Material3.DynamicColors.DayNight.NoActionBar">
-        <!-- Tuỳ chỉnh thêm nếu muốn -->
-        <!-- <item name="android:statusBarColor">?attr/colorSurface</item> -->
-        <!-- <item name="android:navigationBarColor">?attr/colorSurface</item> -->
+        <item name="android:fitsSystemWindows">true</item>
     </style>
 
     <!-- App theme -->
