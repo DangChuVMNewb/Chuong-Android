@@ -10,7 +10,6 @@ import android.view.Window;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.widget.FrameLayout;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.content.pm.ActivityInfo;
 import android.webkit.CookieManager;
@@ -19,6 +18,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import androidx.appcompat.app.AppCompatActivity;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import com.chuong.mc.databinding.ActivityMainBinding;
 
@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String INITIAL_URL = "https://google.com";
     private ActivityMainBinding binding;
     private long exit;
-    private ProgressBar progressBar;
+    private LinearProgressIndicator progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
