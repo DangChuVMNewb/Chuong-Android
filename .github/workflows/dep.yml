@@ -23,11 +23,11 @@ jobs:
       run: chmod +x gradlew
       
     - name: Build Release APK
-      run: ./gradlew assembleRelease --stacktrace --info
+      run: ./gradlew assembleRelease
       
     - name: Upload Release APK
       uses: actions/upload-artifact@v4
       with:
-        name: Sketchware-ProAI-release.apk
+        name: Chuong-release.apk
         path: app/build/outputs/apk/release/*.apk
         retention-days: 30
