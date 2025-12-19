@@ -27,7 +27,7 @@ jobs:
           distribution: temurin
 
       - name: Install Gradle 8.14.3 (system)
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v5
         with:
           gradle-version: 8.14.3
           cache-disabled: true
